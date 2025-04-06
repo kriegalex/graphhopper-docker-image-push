@@ -1,10 +1,16 @@
 FROM maven:3.9.5-eclipse-temurin-21 as build
 
+WORKDIR /graphhopper-maps
+
+COPY graphhopper-maps .
+
 WORKDIR /graphhopper
 
 COPY graphhopper .
 
-RUN mvn clean install -DskipTests
+RUN mvn clean install -DskipTests -Dskip.npm.download=true -Dmaps.local.dir=/graphhopper-maps
+
+RUN rm -rf /graphhopper-maps
 
 FROM eclipse-temurin:21.0.1_12-jre
 

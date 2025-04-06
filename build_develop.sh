@@ -35,11 +35,19 @@ fi
 
 if [ ! -d graphhopper ]; then
   echo "Cloning graphhopper"
-  git clone https://github.com/kriegalex/graphhopper.git
-  (cd graphhopper; git checkout develop)
+  git clone -b develop https://github.com/kriegalex/graphhopper.git
 else
   echo "Pulling graphhopper"
   (cd graphhopper; git checkout develop; git pull)
+fi
+
+# Clone graphhopper-maps repository
+if [ ! -d graphhopper-maps ]; then
+  echo "Cloning graphhopper-maps"
+  git clone -b develop https://github.com/kriegalex/graphhopper-maps.git
+else
+  echo "Pulling graphhopper-maps"
+  (cd graphhopper-maps; git checkout develop; git pull)
 fi
 
 imagename="kriegalex/graphhopper:${1:-latest}"
