@@ -1,13 +1,19 @@
+FROM node:22.14.0 as frontend-build
+
+WORKDIR /graphhopper-maps
+COPY graphhopper-maps .
+RUN npm ci && npm run build
+
 FROM maven:3.9.5-eclipse-temurin-21 as build
 
 WORKDIR /graphhopper-maps
-
-COPY graphhopper-maps .
+# Copy the pre-built graphhopper-maps from the frontend-build stage
+COPY --from=frontend-build /graphhopper-maps/dist ./dist
 
 WORKDIR /graphhopper
-
 COPY graphhopper .
 
+# Use the pre-built maps from the frontend stage
 RUN mvn clean install -DskipTests -Dskip.npm.download=true -Dmaps.local.dir=/graphhopper-maps
 
 RUN rm -rf /graphhopper-maps
